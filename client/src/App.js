@@ -1,5 +1,6 @@
 import "./App.css";
 import React from "react";
+import { connect } from "react-redux";
 import Search from "./pages/Search";
 import Signin from "./pages/Signin";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
@@ -21,6 +22,12 @@ const theme = createTheme({
     },
   },
 });
+
+const mapStateToProps = (state) => {
+  return {
+    cartitems: state.cartitems,
+  };
+};
 
 function App() {
   return (
@@ -49,4 +56,4 @@ function App() {
   );
 }
 
-export default App;
+export default connect(mapStateToProps)(App);

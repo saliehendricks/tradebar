@@ -1,5 +1,5 @@
 const { authenticatedLndGrpc } = require("lightning");
-const { createInvoice } = require("ln-service");
+const { createInvoice, subscribeToInvoices } = require("ln-service");
 //const { createHash, randomBytes } = require("crypto");
 //const { createHodlInvoice, settleHodlInvoice } = require("ln-service");
 //const { subscribeToInvoice } = require("ln-service");

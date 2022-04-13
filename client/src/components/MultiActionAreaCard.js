@@ -1,7 +1,5 @@
 import * as React from "react";
 import Card from "@mui/material/Card";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";

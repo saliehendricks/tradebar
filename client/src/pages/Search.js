@@ -18,12 +18,16 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import DeleteIcon from "@mui/icons-material/Delete";
 import InputAdornment from "@mui/material/InputAdornment";
 import QRCode from "react-qr-code";
+import Alert from "@mui/material/Alert";
+
+const WS_URL = "ws://localhost:3001/api/events";
 
 function Search() {
   const [data, setData] = React.useState(null);
   const [showCart, setShowCart] = React.useState(false);
   const [cartitems, setCartItems] = React.useState([]);
   const [invoice, setInvoice] = React.useState({});
+  const [paymentComplete, setPaymentComplete] = React.useState(false);
 
   const addToCart = (product, qty) => {
     console.log("qty:" + qty + " x prod:" + product);
@@ -62,6 +66,21 @@ function Search() {
 
     setShowCart(open);
   };
+
+  const getEventsSocket = () => {
+    return new WebSocket(WS_URL);
+  };
+  const ws = getEventsSocket();
+
+  const onSocketMessage = (msg) => {
+    const event = JSON.parse(msg.data);
+    if (event.type === "invoice-paid") {
+      // upvote the post when the incoming payment is made for the
+      console.log(event.data);
+      setPaymentComplete(true); //obv check if its the same inv requested
+    }
+  };
+  ws.addEventListener("message", onSocketMessage);
 
   const cartView = () => (
     <Box sx={{ width: 550 }} role="presentation">
@@ -107,6 +126,11 @@ function Search() {
               }}
               label="LN Invoice"
             />
+          </Container>
+          <Container>
+            {paymentComplete && (
+              <Alert severity="success">Payment Complete!</Alert>
+            )}
           </Container>
         </Container>
       )}

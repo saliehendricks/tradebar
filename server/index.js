@@ -1,7 +1,11 @@
 const express = require("express");
-const PORT = process.env.PORT || 3001;
-const app = express();
+const expressWs = require("express-ws");
 const Transaction = require("./transaction");
+const LndNodeManager = require("./lndNodeManager");
+const SocketEvents = require("../shared/types/types");
+
+const PORT = process.env.PORT || 3001;
+const { app } = expressWs(express());
 
 const products = [
   {
@@ -39,8 +43,43 @@ const products = [
   },
 ];
 
+//Setup Lnd Node
+const _manager = new LndNodeManager();
+let lnd = {};
+_manager.connect().then((result) => {
+  lnd = result;
+});
+
+//
+// Configure Websocket
+//
+app.ws("/api/events", (ws) => {
+  // when a websocket connection is made, add listeners for invoices
+  const paymentsListener = (info) => {
+    const event = { type: "invoice-paid", data: info };
+    ws.send(JSON.stringify(event));
+  };
+
+  _manager.on("invoice-paid", paymentsListener);
+
+  // remove listeners when the socket is closed
+  ws.on("close", () => {
+    _manager.off("invoice-paid", paymentsListener);
+  });
+});
+
 app.get("/api", (req, res) => {
   res.json({ message: "TradeBar v0.1!" });
+});
+
+app.get("/walletbalance", async (req, res) => {
+  const balance = await _manager.getBalance();
+  res.json({ balance });
+});
+
+app.get("/wallet", async (req, res) => {
+  const wallet = await _manager.getWallet();
+  res.json({ wallet });
 });
 
 app.get("/search", (req, res) => {

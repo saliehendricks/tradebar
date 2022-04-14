@@ -19,6 +19,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import InputAdornment from "@mui/material/InputAdornment";
 import QRCode from "react-qr-code";
 import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 
 const WS_URL = "ws://localhost:3001/api/events";
 
@@ -44,7 +45,7 @@ function Search() {
   };
 
   const showInvoice = () => {
-    //console.log("amount:" + amount + " prods:" + products);
+    setPaymentComplete(false);
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -129,7 +130,14 @@ function Search() {
           </Container>
           <Container>
             {paymentComplete && (
-              <Alert severity="success">Payment Complete!</Alert>
+              <Container>
+                <Alert severity="success" variant="filled">
+                  <AlertTitle>
+                    <strong>Payment Success</strong>
+                  </AlertTitle>
+                  Your payment has been confirmed <strong>Thank You!</strong>
+                </Alert>
+              </Container>
             )}
           </Container>
         </Container>

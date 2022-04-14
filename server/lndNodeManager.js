@@ -63,12 +63,9 @@ module.exports = class LndNodeManager extends EventEmitter {
   subscribeToPaidInvoicesAsync(lnd) {
     const sub = subscribeToInvoices({ lnd });
     console.log("...subscribed to lnd invoices");
-    //const [lastUpdatedInvoice] = await once(sub, "invoice_paid");
     sub.on("invoice_updated", (invoice) => {
       console.log("...invoice event triggered" + JSON.stringify(invoice));
       if (invoice.is_confirmed) {
-        //const hash = invoice.rHash.toString("base64");
-        //const amount = invoice.amtPaidSat;
         console.log("...invoice-paid id: " + JSON.stringify(invoice.id));
         this.emit("invoice-paid", invoice);
       }
